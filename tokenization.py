@@ -1,31 +1,35 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
-import string
+from filters.text import NonAlphaFilter
 
 
 class Tokenizer(object):
 
-    def __init__(self, filters=None):
-        self._filters = filters or []
+    def __init__(self, filter=None, normalizer=None):
+        self._filter = filter or (lambda x: x)
+        self._normalizer = normalizer or (lambda x: x)
 
     def __call__(self, *args, **kwargs):
         return self.tokenize(*args, **kwargs)
 
     def _split(self, text):
-        return text.translate(dict.fromkeys(map(ord, string.punctuation))).split()
+        return text.split()
 
     def tokenize(self, text, *args, **kwrags):
-        for token in self._split(text):
-            for filt in self._filters:
-                token = filt.filter(token)
-
-            yield token
+        for token in self._filter(self._split(text)):
+            yield self._normalizer(token)
 
 
-class TokenNormalizer(object):
+class AlphaTokenizer(Tokenizer):
+    """
+    Tokenize input text removing all non alpha characters and replacing punctuation chars with a space.
+    Input is assumed to be unicode and further filters can be chained by passing a filter to the constructor
+    """
+    def __init__(self, keep_digits=False, filter=None, normalizer=None):
+        super(AlphaTokenizer, self).__init__(filter, normalizer)
+        self._keep_digits = keep_digits
+        self._alpha_filter = NonAlphaFilter(keep_digits=self._keep_digits, punct_replacement=' ')
 
-    def __call__(self, *args, **kwargs):
-        return self.normalize(*args, **kwargs)
+    def _split(self, text):
+        return self._alpha_filter.filter(text).split()
 
-    def normalize(self, token, *args, **kwrags):
-        return token
+
