@@ -18,17 +18,14 @@ class CorpusCounter(Counter):
 
     Default implementation uses AlphaTokenizer which uses NonAlphaFilter to remove all non alpha characters.
 
-    Using a custom method:
-     > CorpusCounter(iterable, tokenizer=lambda x: x.split())
+    >>> c = CorpusCounter(iterable, tokenizer=lambda x: x.split())  # Using a custom method
 
-    Using a method class:
-     > from functools import partial
-       CorpusCounter(iterable, tokenizer=partial(cls_method, cls_instance))
+    >>> from functools import partial
+    >>> c = CorpusCounter(iterable, tokenizer=partial(cls_method, cls_instance))  # Using a method class
 
-    Using a tokenizer with filters:
-     > CorpusCounter(iterable, tokenizer=AlphaTokenizer(filter=StopWordFilter(stopwords, CustomFilter())))
-
-       Here it uses an AlphaTokenizer with a StopWordFilter chained with another custom filter
+    >>> from pyragraph.filers.words import StopWordFilter
+    >>> tokenizer = AlphaTokenizer(filter=StopWordFilter(stopwords, CustomFilter()))  # chained with a custom filter
+    >>> c = CorpusCounter(iterable, tokenizer=tokenizer)  # Using a tokenizer with filters
 
     """
     def __init__(self, iterable=[], tokenizer=None):
@@ -68,7 +65,7 @@ class CorpusCounter(Counter):
             result[elem]['docs'] = val['docs'] - other[elem]['docs']
 
         for elem, val in other.items():
-            if not elem in result:
+            if elem not in result:
                 self._update_elem(result[elem], val['count'], val['docs'], how='subtract')
 
         return result

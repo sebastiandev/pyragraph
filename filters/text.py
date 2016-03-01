@@ -6,7 +6,7 @@ import unicodedata as ud
 class NonAlphaFilter(Filter):
     """
     Filters all non alpha characters, input is assumed to be unicode.
-    By default digits are skipped bu can be kept if specified by parameter,
+    By default digits are skipped but can be kept if specified by parameter,
     also punctuation characters are removed but a replacement can be defined.
     """
 
