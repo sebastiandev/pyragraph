@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import six
 
 
 def skip_empty_data(default=None):
@@ -22,11 +23,11 @@ def ensure_list_input(method):
     def _wrapper(*args):
         list_data = args[1]
 
-        if type(list_data) not in [list, set]:
-            if type(list_data) is str or unicode:
+        if not isinstance(list_data, (list, set)):
+            if isinstance(list_data, six.text_type):
                 list_data = list_data.split()
             else:
-                raise Exception("Filter input data must be of type list, set or str")
+                raise Exception("Filter input data must be of type list, set or string")
 
         return method(args[0], list_data)
 
@@ -38,14 +39,14 @@ def ensure_str_input(method):
     def _wrapper(*args):
         str_data = args[1]
 
-        if type(str_data) is str or unicode:
+        if isinstance(str_data, six.text_type):
             pass
 
-        elif type(str_data) in [list, set]:
-            str_data = str_data.split()
+        elif isinstance(str_data, (list, set)):
+            str_data = ' '.join(str_data)
 
         else:
-            raise Exception("Filter input data must be of type list, set or str")
+            raise Exception("Filter input data must be of type list, set or string")
 
         return method(args[0], str_data)
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from .base import Filter, skip_empty_data
 import unicodedata as ud
+import six
 
 
 class NonAlphaFilter(Filter):
@@ -21,7 +22,7 @@ class NonAlphaFilter(Filter):
         if keep_digits:
             valid_categories.add('Nd')
 
-        self._all = ''.join(unichr(i) for i in xrange(65536))
+        self._all = ''.join(six.unichr(i) for i in range(65536))
         self._letters = set(''.join(c for c in self._all if ud.category(c) in valid_categories))
         self._not_letters = ''.join(c for c in self._all if ud.category(c) not in valid_categories)
         self._not_letters_map = dict.fromkeys(map(ord, self._not_letters))

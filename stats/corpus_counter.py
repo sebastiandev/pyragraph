@@ -45,11 +45,11 @@ class CorpusCounter(Counter):
             return NotImplemented
 
         result = CorpusCounter()
-        for elem, val in self.items():
+        for elem, val in iter(self.items()):
             result[elem]['count'] = val['count'] + other[elem]['count']
             result[elem]['docs'] = val['docs'] + other[elem]['docs']
 
-        for elem, val in other.items():
+        for elem, val in iter(other.items()):
             if not elem in result:
                 self._update_elem(result[elem], val['count'], val['docs'])
 
@@ -60,11 +60,11 @@ class CorpusCounter(Counter):
             return NotImplemented
 
         result = CorpusCounter()
-        for elem, val in self.items():
+        for elem, val in iter(self.items()):
             result[elem]['count'] = val['count'] - other[elem]['count']
             result[elem]['docs'] = val['docs'] - other[elem]['docs']
 
-        for elem, val in other.items():
+        for elem, val in iter(other.items()):
             if elem not in result:
                 self._update_elem(result[elem], val['count'], val['docs'], how='subtract')
 
@@ -75,14 +75,14 @@ class CorpusCounter(Counter):
             return NotImplemented
 
         result = CorpusCounter()
-        for elem, val in self.items():
+        for elem, val in iter(self.items()):
             other_val = other[elem]
             newval = other_val if val['count'] < other_val['count'] else val
 
             if newval['count'] > 0:
                 result[elem] = newval
 
-        for elem, val in other.items():
+        for elem, val in iter(other.items()):
             if elem not in self and val['count'] > 0:
                 result[elem] = val
 
@@ -93,7 +93,7 @@ class CorpusCounter(Counter):
             return NotImplemented
 
         result = CorpusCounter()
-        for elem, val in self.items():
+        for elem, val in iter(self.items()):
             other_val = other[elem]
             newcount = val if other_val['count'] < val['count'] else other_val
 
@@ -138,5 +138,5 @@ class CorpusCounter(Counter):
         self._modify_elems(iterable, how='subtract')
 
     def elements(self):
-        return chain.from_iterable(starmap(repeat, [(k, v['count']) for k, v in self.iteritems()]))
+        return chain.from_iterable(starmap(repeat, [(k, v['count']) for k, v in iter(self.items())]))
 
