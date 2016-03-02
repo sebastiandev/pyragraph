@@ -1,0 +1,4 @@
+nltk  # only required if the spanish stemmer is used
+pattern  # only required if spanish lemmatization is used
+pymongo  # only required for the handy mongo iterator
+six
